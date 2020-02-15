@@ -2,6 +2,7 @@ import dot3k.lcd as lcd
 import RPi.GPIO as GPIO
 import time
 
+
 class screenwriter(object):
     """
     Wrapper for the Pimironi screen library used to write text to the LCD screen
@@ -29,7 +30,10 @@ class screenwriter(object):
         GPIO.setup(5, GPIO.OUT)
         GPIO.setup(6, GPIO.OUT)
         GPIO.setup(13, GPIO.OUT)
-        # GPIO.cleanup()
+        # GPIO.cleanup() # It is good practice to clean up the GPIO
+        # after use to protect the pins but since they are used later in
+        # the code cleaning up now causes issues. Look into ways to
+        # clean up the gpio when closing or ending the final script
 
 
     def write(self, text=None, line=1, cursor=0, truncate=True):
@@ -49,15 +53,18 @@ class screenwriter(object):
             (default: True)
         """
         # Force the text to be a string
-        text = str(text)
+        # [X] I couldn't find a way to test this variable without making it
+        # a variable of the class, look into a way to not have to do
+        # this as it's not necessary
+        self.text = str(text)
 
         # If the truncate flag is set and the length of the text is
         # longer than 16 characters then cut it down to size
-        if len(text) > 16 and truncate:
-            text = text[:16]
+        if len(self.text) > 16 and truncate:
+            self.text = self.text[:16]
 
         lcd.set_cursor_position(cursor, line)
-        lcd.write(text)
+        lcd.write(self.text)
 
     def lights(self, state):
         """
