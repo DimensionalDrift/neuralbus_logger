@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import datetime
 import os
-from neuralbus import helpers
+import helpers
 
 
 class buslogger(object):

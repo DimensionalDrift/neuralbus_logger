@@ -23,7 +23,7 @@ def busscreen(data, scr):
 
         # Append any non results to a log file for debugging purposes
         root = helpers.get_project_root()
-        filename = root + "/noresult.log"
+        filename = root + "/data/noresult.log"
         now = datetime.now()
         helpers.jsonfile_append(
             filename, {"data": data, "timestamp": now.strftime("%d/%m/%Y %H:%M:%S")},
