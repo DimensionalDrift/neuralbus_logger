@@ -5,6 +5,7 @@ from datetime import datetime
 from random import choice
 from buslogger import buslogger
 from screenwriter import screenwriter
+import helpers
 
 
 def busscreen(data, scr):
@@ -19,6 +20,14 @@ def busscreen(data, scr):
         scr.write("No bus times", line=0, center=True)
         scr.write(" ", line=1, center=True)
         scr.write(sadface, line=2, center=True)
+
+        # Append any non results to a log file for debugging purposes
+        root = helpers.get_project_root()
+        filename = root + "/noresult.log"
+        now = datetime.now()
+        helpers.jsonfile_append(
+            filename, {"data": data, "timestamp": now.strftime("%d/%m/%Y %H:%M:%S")},
+        )
 
     else:
         # Iterating across all the results, make sure the data is justified

@@ -2,7 +2,7 @@ import requests
 import json
 from datetime import datetime
 import os
-import utils
+from neuralbus import helpers
 
 
 class buslogger(object):
@@ -68,28 +68,13 @@ class buslogger(object):
         # If no file name is given then construct a file name using the
         # root directory, the date and the stop id number
         if filename is None:
-            root = utils.get_project_root()
+            root = helpers.get_project_root()
             stopid = busjson["stopid"]
             date = datetime.now().strftime("%d%m%y")
 
             filename = "%s/data/%s_%s.json" % (root, date, stopid)
 
-        # If the file does not already exist then create it and
-        # write in an empty list
-        if not os.path.exists(filename):
-            with open(filename, "w+") as myfile:
-                myfile.write("[]")
-
-        # Open json file and load data to a list
-        with open(filename, "r") as myfile:
-            alldata = json.load(myfile)
-
-        # Append the new data to the list
-        alldata.append(busjson)
-
-        # Open json file and save the list
-        with open(filename, "w") as myfile:
-            json.dump(alldata, myfile)
+        helpers.jsonfile_append(filename, busjson)
 
         # Future Note: I feel that one or more of the above steps could
         # be merged to reduce the amount of times that the file must be

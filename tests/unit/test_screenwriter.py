@@ -74,3 +74,15 @@ class TestScreenWriter(unittest.TestCase):
         self.scr.write("Lines are clear.Nope", line=2)
 
         time.sleep(3)
+
+    def test_center(self):
+        """
+        Method to check when the center flag is set that the length of
+        the string is 16 characters long.
+        """
+
+        self.scr.write(":)", center=True)
+
+        self.assertEqual(len(self.scr.text), 16)
+
+        time.sleep(3)

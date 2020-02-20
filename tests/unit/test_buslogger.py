@@ -4,7 +4,7 @@ import os
 import json
 from datetime import datetime
 from neuralbus import buslogger
-from neuralbus import utils
+from neuralbus import helpers
 
 
 class TestBuslogger(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestBuslogger(unittest.TestCase):
         # Setup an instance of the buslogger class and find the current
         # directory of this test
         self.buslog = buslogger.buslogger()
-        self.root = utils.get_project_root()
+        self.root = helpers.get_project_root()
         self.testfile = "%s/test.log" % self.root
 
     def tearDown(self):
