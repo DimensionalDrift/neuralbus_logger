@@ -43,7 +43,7 @@ class buslogger(object):
             # and so will return a 404, otherwise the code should be
             # valid json
             if response.status_code == 404:
-                return {"errorcode": "404"}
+                return {"errorcode": "404", "stopid": "null"}
             else:
                 return response.json()
 

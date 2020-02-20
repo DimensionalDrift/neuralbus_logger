@@ -36,7 +36,7 @@ class screenwriter(object):
         # now causes issues. Look into ways to clean up the gpio when
         # closing or ending the final script
 
-    def write(self, text=None, line=1, cursor=0, truncate=True):
+    def write(self, text=None, line=1, cursor=0, truncate=True, center=False):
         """
         Function to write text to the LCD Screen.
 
@@ -51,6 +51,9 @@ class screenwriter(object):
         truncate : bool, optional
             Boolean flag to indicate whether to truncate the line or not
             (default: True)
+        center : bool, optional
+            Boolean flag to indicate whether to center the line or not
+            (default: False)
         """
         # Force the text to be a string
         # [X] I couldn't find a way to test this variable without making it
@@ -62,6 +65,9 @@ class screenwriter(object):
         # longer than 16 characters then cut it down to size
         if len(self.text) > 16 and truncate:
             self.text = self.text[:16]
+
+        if center:
+            self.text = self.text.center(16)
 
         lcd.set_cursor_position(cursor, line)
         lcd.write(self.text)
