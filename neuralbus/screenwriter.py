@@ -30,11 +30,11 @@ class screenwriter(object):
         GPIO.setup(5, GPIO.OUT)
         GPIO.setup(6, GPIO.OUT)
         GPIO.setup(13, GPIO.OUT)
-        # GPIO.cleanup() # It is good practice to clean up the GPIO
-        # after use to protect the pins but since they are used later in
-        # the code cleaning up now causes issues. Look into ways to
-        # clean up the gpio when closing or ending the final script
-
+        # GPIO.cleanup()
+        # It is good practice to clean up the GPIO after use to protect
+        # the pins but since they are used later in the code cleaning up
+        # now causes issues. Look into ways to clean up the gpio when
+        # closing or ending the final script
 
     def write(self, text=None, line=1, cursor=0, truncate=True):
         """

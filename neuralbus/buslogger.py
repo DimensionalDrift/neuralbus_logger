@@ -31,19 +31,25 @@ class buslogger(object):
 
         """
 
-        busurl = (
+        self.busurl = (
             "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid="
             + str(stopid)
             + "&format=json"
         )
 
         try:
-            response = requests.get(busurl)
+            response = requests.get(self.busurl)
+            # Sometimes the bus times will go down on smartdublins end
+            # and so will return a 404, otherwise the code should be
+            # valid json
+            if response.status_code == 404:
+                return {"errorcode": "404"}
+            else:
+                return response.json()
 
         except Exception as e:
-            print("Error returing data from server")
-
-        return response.json()
+            # raise("Error returing data from server: %s" % (e))
+            raise (e)
 
     def buslog(self, busjson, filename=None):
         """ Function to log data to a file
@@ -89,6 +95,7 @@ class buslogger(object):
         # be merged to reduce the amount of times that the file must be
         # interacted with
 
+    @staticmethod
     def datetimer(timestr):
         """
         Helper function to convert the date to a datetime object.
@@ -104,3 +111,4 @@ class buslogger(object):
             A datetime object of the given date string.
         """
         return datetime.strptime(timestr, "%d/%m/%Y %H:%M:%S")
+

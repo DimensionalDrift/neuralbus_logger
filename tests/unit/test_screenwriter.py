@@ -15,14 +15,14 @@ class TestScreenWriter(unittest.TestCase):
     def test_trunc_message_length(self):
         """
         Method to test that a message is truncated by default before
-        being written to the screen
+        being written to the screen.
         """
 
         # make a string over 16 characters long
         message = "test" * 5
 
         # Write a message to the screen
-        #[X] I think this might be the wrong way to import a class... It
+        # [X] I think this might be the wrong way to import a class... It
         # shouldn't have to actually write to the screen
         self.scr.write(message)
 
@@ -34,7 +34,7 @@ class TestScreenWriter(unittest.TestCase):
     def test_message_length(self):
         """
         Method to test that a message is not truncated when the flag is
-        set to false
+        set to false.
         """
 
         # make a string over 16 characters long
@@ -50,7 +50,7 @@ class TestScreenWriter(unittest.TestCase):
     def test_lights(self):
         """
         Method to check that the light are working by blinking them off
-        and on
+        and on.
         """
 
         # Initialize the screen and blink the lights on and off
@@ -63,7 +63,7 @@ class TestScreenWriter(unittest.TestCase):
 
     def test_screen(self):
         """
-        Method to check that the screen actually works and prints a message
+        Method to check that the screen actually works and prints a message.
         """
 
         # Initialize the screen and write some lines
