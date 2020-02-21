@@ -96,4 +96,3 @@ class buslogger(object):
             A datetime object of the given date string.
         """
         return datetime.strptime(timestr, "%d/%m/%Y %H:%M:%S")
-

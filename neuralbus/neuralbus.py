@@ -22,9 +22,12 @@ def busscreen(data, scr):
         scr.write(sadface, line=2, center=True)
 
         # Append any non results to a log file for debugging purposes
-        root = helpers.get_project_root()
-        filename = root + "/data/noresult.log"
         now = datetime.now()
+        date = now.strftime("%d%m%y")
+
+        root = helpers.get_project_root()
+        filename = root + "/data/noresult_" + date + ".log"
+
         helpers.jsonfile_append(
             filename, {"data": data, "timestamp": now.strftime("%d/%m/%Y %H:%M:%S")},
         )
@@ -93,8 +96,8 @@ def main():
     # perspective
     scr = screenwriter()
 
-    data_3146 = {"results": []}
-    data_3224 = {"results": []}
+    data_3146 = {"results": [], "stopid": "3146"}
+    data_3224 = {"results": [], "stopid": "3224"}
 
     # Using a infinite loop, the bus times will be checked at specific
     # second intervals and written to file, then every 5 seconds the bus
