@@ -1,8 +1,10 @@
 #! /usr/bin/python3
 
 import time
+import threading
 from datetime import datetime
 from random import choice
+import schedule
 from buslogger import buslogger
 from screenwriter import screenwriter
 import helpers
@@ -81,55 +83,46 @@ def busscreen(data, scr):
             scr.write(text, line=i)
 
 
-def main():
-    # Start instance of buslogger, poll for the bus stop data and write
-    # it to a file
-    blg = buslogger()
+def loopstops(stoplist, scr, blg):
+    # Function to loop through the bus stops on the list and display
+    # their times
+    for stop in stoplist:
+        busscreen(blg.stopdata[stop], scr)
+        time.sleep(5)
 
-    # Start instance of screenwriter and write the bus times to the
-    # screen
-    # The reason this is initialized here then passed to the busscreen
-    # function above is to have the screen clear and initialize only
-    # once every so often rather than every time. I'm not sure if it's
-    # bad for the screen to clear ever time it's used but it certainly
-    # takes a moment so it's better this way from a usability
-    # perspective
+
+def run_threaded(job_func, args):
+    # Function to pass jobs to a new thread, using the example from here:
+    # https://schedule.readthedocs.io/en/stable/faq.html#how-can-i-pass-arguments-to-the-job-function
+    job_thread = threading.Thread(target=job_func, args=args)
+    job_thread.start()
+
+
+def main():
+    # Start instance of buslogger and screenwriter, both objects need to
+    # be created and passed around as buslogger will contain data and
+    # screenwriter needs to initialize the screen only once per use.
+    blg = buslogger()
     scr = screenwriter()
 
-    data_3146 = {"results": [], "stopid": "3146"}
-    data_3224 = {"results": [], "stopid": "3224"}
+    # List of stops to be queried
+    stoplist = [3146, 3224]
 
-    # Using a infinite loop, the bus times will be checked at specific
-    # second intervals and written to file, then every 5 seconds the bus
-    # times alternate between the times of one bus stop and another
+    # For each stop in the list add some initial dummy data and set up a
+    # threaded schedule job to check the bus times every 20 seconds
+    for stop in stoplist:
+        blg.stopdata[stop] = {"results": [], "stopid": stop}
+        schedule.every(20).seconds.do(run_threaded, blg.buscall, args=(stop,))
 
-    # X There is a few things that could be changed in this code, while
-    # this works for now it would be better to not have to rely on an
-    # infinite loop. Look into something involving cron, maybe the
-    # script would be called once a minute and then all these actions
-    # would only need to last one minute.. Look into parallelizing the
-    # part where the bus times are called by buslogger, this should help
-    # with requests taking it's time to report back the times.
+    # Set the delay to be 5 seconds per bus stop and set schedule to
+    # display the times on the LCD screen
+    delay = len(stoplist) * 5
+    schedule.every(delay).seconds.do(run_threaded, loopstops, args=(stoplist, scr, blg))
+
+    # Using a infinite loop, run pending schedule jobs once every second
     while True:
-
-        sec = int(datetime.now().strftime("%S"))
-
-        if sec in [0, 10, 20, 30, 40, 50]:
-            busscreen(data_3146, scr)
-            time.sleep(0.75)
-            if sec in [0, 20, 40]:
-                data_3146 = blg.buscall(3146)
-                blg.buslog(data_3146)
-
-        elif sec in [5, 15, 25, 35, 45, 55]:
-            busscreen(data_3224, scr)
-            time.sleep(0.75)
-            if sec in [5, 25, 45]:
-                data_3224 = blg.buscall(3224)
-                blg.buslog(data_3224)
-
-        else:
-            time.sleep(0.5)
+        schedule.run_pending()
+        time.sleep(0.1)
 
 
 if __name__ == "__main__":

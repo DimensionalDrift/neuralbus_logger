@@ -12,7 +12,7 @@ class buslogger(object):
     """
 
     def __init__(self):
-        pass
+        self.stopdata = {}
 
     def buscall(self, stopid):
         """
@@ -43,9 +43,11 @@ class buslogger(object):
             # and so will return a 404, otherwise the code should be
             # valid json
             if response.status_code == 404:
-                return {"errorcode": "404", "stopid": "null"}
+                self.stopdata[stopid] = {"errorcode": "404", "results": [], "stopid": stopid}
             else:
-                return response.json()
+                self.stopdata[stopid] = response.json()
+
+            return self.stopdata[stopid]
 
         except Exception as e:
             # raise("Error returing data from server: %s" % (e))
@@ -75,6 +77,7 @@ class buslogger(object):
             filename = "%s/data/%s_%s.json" % (root, date, stopid)
 
         helpers.jsonfile_append(filename, busjson)
+
 
         # Future Note: I feel that one or more of the above steps could
         # be merged to reduce the amount of times that the file must be
